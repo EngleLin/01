@@ -1,14 +1,10 @@
 <?php
-if( !isset($_POST["prod"]) || !isset($_POST['price'])
-	|| empty($_POST['price']) || !is_int($_POST['price'])
-	|| empty($_POST['prod']) )
+if( !isset($_GET['id']) || empty($_GET['id']) )
 {
-	echo '¤£¹ï';
+	echo 'ä¸å°';
+	echo '<a href="list.php">å›åˆ°åˆ—è¡¨</a>';
 	exit;
 }
-//$db = new PDO('³s½u¦r¦ê',±b¸¹,±K½X,ÃB¥~°Ñ¼Æ);
-//$db = new PDO('mysql:host=localhost;dbname=test0329;charset=utf8'
-//	,'mememe','123456' );
 try {
 	$db = new PDO('mysql:host=localhost;dbname=test0329;charset=utf8'
 		,'mememe','123456', array( 
@@ -17,12 +13,10 @@ try {
 		) );
 }catch(PDOException $err) {
 	echo "ERROR:";
-	echo $err->getMessage();
+	echo $err->getMessage();  //çœŸå¯¦ä¸–ç•Œä¸é€™æ¨£åš
+	echo '<a href="list.php">å›åˆ°åˆ—è¡¨</a>';
 	exit;
 }
-echo "³s½u¦¨¥\";
-$stmt = $db->prepare("insert into moneybook (name,cost) values (?,?)");
-$stmt->execute([$_POST["prod"], $_POST['price']]);
-echo "·s¼W¤F";
-echo $stmt->rowCount();
-echo "µ§¸ê®Æ";
+$stmt = $db->prepare('delete from moneybook where m_id=?');
+$stmt->execute([$_GET['id']]);
+header('Location: list.php',TRUE,303);  //æ²’å¯«,TRUE,333ä¹Ÿå¯ä»¥ï¼Œä½†æ˜¯..
