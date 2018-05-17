@@ -18,24 +18,43 @@ function hideNode(id){
 	var x = document.getElementById(id);
 	x.style.display = "none";
 	}
+function add2Server(){
 	
+	var data = {
+	prod: document.getElementById("prod").value,
+	price: document.getElementById("price").value
+	};
+	
+	//console.log( data );
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST","add.php");
+	xhr.setRequestHeader("Content-Type","application/json;charset=UTF-8");
+	xhr.onreadystatechange = function(){
+	if(this.readyState == 4 && this.status == 200 ){
+		console.log( this.responseText );
+		}
+		};
+		xhr.send( JSON.stringify(data) );
+	
+	}	
 	
 	
 	</script>
 </head>
 <body>
-	
+
 	<button id="show_add_btn">新增</button>
+
 	<table id="list">
 	</table>
-
+	
 	<div id="edit_form">
-	<input type="hidden" id="ppid">
-	請輸入商品：<input type="text" id="prod">
-	金額：<input type="text"id="price"></br>
-	<button id="add_btn">新增</button>
-	<button id="update_btn">儲存編輯</button>
-	<button id="cancel_btn">取消</button>
+		<input type="hidden" id="ppid">
+		請輸入商品：<input type="text" id="prod">
+		金額：<input type="text" id="price">
+		<button id="add_btn">新增</button>
+		<button id="update_btn">儲存編輯</button>
+		<button id="cancel_btn">取消</button> 
 	</div>
 	
 	
@@ -46,12 +65,15 @@ function hideNode(id){
 	x = document.getElementById("show_add_btn");
 	x.addEventListener("click",function(){
 		showNode("edit_form");
+		hideNode("update_btn")
+		hideNode("show_add_btn")
 	});
 
-	
-	x = document.getElementById("cancel_btn");
-	x.addEventListener("click",function(){
+	var y;
+	y = document.getElementById("cancel_btn");
+	y.addEventListener("click",function(){
 		hideNode("edit_form");
+		showNode("show_add_btn")
 	});
 	
 	})();
