@@ -1,14 +1,7 @@
 <?php
 //輸入=======================================================
-//如果要檢查取用方式是否符合....
-//if( strcasecmp($_SERVER['REQUEST_METHOD'], 'DELETE') !=0 ){
-//	http_response_code(405);
-//	echo 'wrong way';
-//	exit;	
-//}
-//預期收到的資料格式  { id:值 }
-$data = json_decode(file_get_contents('php://input'));
-//檢查你的資料. 暫時省略
+$id = $_GET['id'];
+//最好檢查一下參數
 //資料庫操作===================================================
 try {
 	$db = new PDO('mysql:host=localhost;dbname=test0329;charset=utf8'
@@ -22,9 +15,22 @@ try {
 	//echo $err->getMessage(); //測試的時候用
 	exit;
 }
-$stmt = $db->prepare('delete from moneybook where m_id=?');
-$stmt->execute( [ $data->{"id"} ] );
+//查詢
+$stmt = $db->prepare('select * from moneybook where m_id=?');
+$stmt->execute([$id]);
 //輸出=======================================================
+$data = NULL;
+if($row = $stmt->fetch()){  //只要一筆
+	$data = (object)[
+			'prod' => $row['name'],
+			'price' => $row['cost'],
+			'id' => $row['m_id']
+		];
+}else{
+	http_response_code(404);
+	echo 'no data';
+	exit;
+}
 http_response_code(200);
 header("Content-Type: application/json;charset=UTF-8");
-echo json_encode($data);              //把insert的資料再回傳給用戶端
+echo json_encode($data);              //把查詢資料回傳給用戶端
